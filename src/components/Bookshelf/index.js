@@ -6,6 +6,13 @@ class Bookshelf extends Component {
         return(
             <div>
                 <h1>{this.props.shelf}</h1>
+                <ul>
+                    {this.props.books.map( book => (
+                        <li key={book.id}>
+                            {book.title}
+                        </li>
+                    ))}
+                </ul>
             </div>
         )
     }
