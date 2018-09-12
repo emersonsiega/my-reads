@@ -1,0 +1,21 @@
+.bookshelf {
+    margin-top: 20px;
+}
+
+.bookshelf-container {
+    overflow-x: scroll;
+}
+
+.shelf-title {
+    font-size: 2em;
+    color: #333;
+    border-bottom: 1px solid #6b6b6b3d;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.books-list {
+    display: inline-flex;
+    flex-flow: row;
+    overflow-y: hidden;
+}
