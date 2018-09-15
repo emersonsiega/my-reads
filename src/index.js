@@ -22,9 +22,7 @@ class App extends Component {
 
     componentDidMount() {
         BooksAPI.getAll().then(books => {
-            this.setState({
-                books: books
-            })
+            this.updateState(books);
         });
     }
 
@@ -36,13 +34,12 @@ class App extends Component {
         return book;
     }
 
-    onMoveBook = book => {
+    updateState = value => this.setState({ books: value });
+
+    onMoveBook = (book) => {
         BooksAPI.update( book, book.shelf ).then( () => {
             const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
-            
-            this.setState({
-                books: booksChanged
-            });
+            this.updateState(booksChanged);
         } );
     }
 
@@ -69,6 +66,9 @@ class App extends Component {
     render() {
         return(
             <div>
+                <Route render={ (props) => (
+                    <BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} {...props} />
+                )} />
                 <Route
                     exact
                     path='/'
@@ -80,8 +80,6 @@ class App extends Component {
                     path='/search'
                     render={ () => (
                         <div>
-                            <BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} 
-                                value={this.state.lastSearch} searching={true} />
                             <div style={{
                                 paddingTop: '72px',
                                 background: '#fff'
