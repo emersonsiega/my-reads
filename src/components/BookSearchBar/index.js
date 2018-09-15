@@ -32,8 +32,8 @@ class BookSearchBar extends Component {
 
         return(
             <div className='search-bar'>
-                <div className='search-title'>{this.props.title}</div>
-                <div className='search'>
+                <div className='search-title search-bar-content'>{this.props.title}</div>
+                <div className='search search-bar-content'>
 
                     { !isSearching && (
                         
@@ -46,7 +46,7 @@ class BookSearchBar extends Component {
                     { isSearching && (
 
                         <div>
-                            <Link className='search-icon' onClick={this.updateValue} to='/'>
+                            <Link className='back-icon' onClick={this.updateValue} to='/'>
                                 <span><i className="fas fa-arrow-left"/></span>
                             </Link>
 

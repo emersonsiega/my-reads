@@ -32,25 +32,62 @@
     outline: none;
     border: none;
     color: #333;
-    border-bottom: 1px solid rgb(129, 127, 127);
+    border-bottom: 1px solid #dedede;
     padding-right: 22px;
     margin-right: -22px;
 }
 
-.search-icon {
-    padding: 4px;
-    color: #9a9a9a;
-    background: white;
-    font-size: 21px;
-    outline: none;
-    cursor: pointer;
+.search-input::-webkit-input-placeholder {
+    color: #dedede;
+    font-weight: 100;
 }
 
-.clear-icon {
-    color: #9a9a9a;
+.search-icon {
+    padding: 4px;
+    color: #989696;
     background: white;
     font-size: 21px;
     outline: none;
     cursor: pointer;
     border: none;
+    transition: all 0.7s;
+}
+
+.back-icon {
+    padding: 4px;
+    color: #dedede;
+    background: white;
+    font-size: 21px;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.7s;
+}
+
+.clear-icon {
+    color: #dedede;
+    background: white;
+    font-size: 21px;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.7s;
+}
+
+.clear-icon:hover {
+    color: #333;
+}
+
+.back-icon:hover {
+    color: #333;
+}
+
+.search-icon:hover {
+    color: black;
+}
+
+.search-bar-content {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
 }
