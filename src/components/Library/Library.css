@@ -1,0 +1,20 @@
+.library-body {
+    padding-top: 90px;
+    background: #fff;
+}
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #989898;
+    font-weight: 200;
+    font-size: 2em;
+}
+
+.library-list {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}

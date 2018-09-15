@@ -7,6 +7,7 @@ import './index.css';
 import * as BooksAPI from "./api/BooksAPI";
 import BookSearchBar from "./components/BookSearchBar";
 import Bookshelves from "./components/Bookshelves";
+import Library from "./components/Library";
 
 class App extends Component {
     state = {
@@ -80,16 +81,7 @@ class App extends Component {
                 <Route
                     path='/search'
                     render={ () => (
-                        <div>
-                            <div style={{
-                                paddingTop: '72px',
-                                background: '#fff'
-                            }}>
-                                <label style={{display: 'flex', justifyContent: 'center', padding: '20px', color: '#989898', fontWeight: 200, fontSize: '2em'}}>
-                                    Type something to search a book!
-                                </label>
-                            </div>
-                        </div>
+                        <Library books={this.state.search} onMoveBook={this.onMoveBook}></Library>
                     )}
                 />
             </div>
