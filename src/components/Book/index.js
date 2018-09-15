@@ -10,6 +10,13 @@ class Book extends Component {
         book: {}
     }
 
+    //TODO: use App shelves constant
+    options = [
+        {value: 'currentlyReading', label: 'Currently Reading'},
+        {value: 'wantToRead', label: 'Want to read'},
+        {value: 'read', label: 'Read'}
+    ]
+
     onMoveBook = (selected, {action}) => {
         let book = this.props.book;
         if ( action === 'clear' ) {
@@ -21,33 +28,30 @@ class Book extends Component {
         this.props.onMoveBook && this.props.onMoveBook( book );
     }
 
-    render() {
-        const limitDescription = ({description}) => {
-            let descr = description.substring(0, 100);
-            return descr.substring(0, descr.lastIndexOf(' ')).concat('...');
-        }
+    limitDescription = ({description = ''}) => {
+        let descr = description.substring(0, 100);
+        return descr.substring(0, descr.lastIndexOf(' ')).concat('...');
+    }
 
-        const options = [
-            {value: 'currentlyReading', label: 'Currently Reading'},
-            {value: 'wantToRead', label: 'Want to read'},
-            {value: 'read', label: 'Read'}
-        ]
+    render() {
+
+        const {book} = this.props;
 
         return(
             <article className='book-card'>
                 <div className='book-header'>
-                    <label className='book-title'>{this.props.book.title}</label>
-                    <label className='book-subtitle'>{this.props.book.subtitle}</label>
+                    <label className='book-title'>{book.title}</label>
+                    <label className='book-subtitle'>{book.subtitle}</label>
                 </div>
                 <div className='book-content'>
-                    <div className='book-cover' style={{backgroundImage: `url(${this.props.book.imageLinks.thumbnail})`}}></div>
+                    <div className='book-cover' style={{backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                     <div className='book-details'>
-                        <label className='book-author'>{this.props.book.authors.join(', ')}</label>
-                        <label className='book-description'>{limitDescription(this.props.book)}</label>
+                        <label className='book-author'>{book.authors && book.authors.join(', ')}</label>
+                        <label className='book-description'>{this.limitDescription(book)}</label>
                         <div className='book-rating'>
                             <StarRatingComponent
                                 name='rating'
-                                value={this.props.book.averageRating}
+                                value={book.averageRating}
                                 starCount={5}
                                 editing={false}
                                 starColor="#ffb400"
@@ -69,12 +73,12 @@ class Book extends Component {
                                     );
                                   }}
                             />
-                            <label>{this.props.book.ratingsCount || 0} ratings</label>
+                            <label>{book.ratingsCount || 0} ratings</label>
                         </div>
                     </div>
                 </div>
                 <div className='book-footer'>
-                    <a className='book-link book-footer-content' target='_blank' href={this.props.book.previewLink}>
+                    <a className='book-link book-footer-content' target='_blank' href={book.previewLink}>
                         Preview book
                     </a>
                     <Select className='book-options book-footer-content'
@@ -82,11 +86,11 @@ class Book extends Component {
                         isSearchable={false}
                         isClearable={true}
                         placeholder='Move to...'
-                        value={options.filter( i => i.value === this.props.book.shelf )[0]}
+                        value={this.options.filter( i => i.value === book.shelf )[0]}
                         onChange={this.onMoveBook}
                         menuPosition='fixed'
                         menuShouldBlockScroll={true}
-                        options={options}
+                        options={this.options}
                     />
                 </div>
             </article>
