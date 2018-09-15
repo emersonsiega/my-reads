@@ -11,6 +11,10 @@ class Bookshelves extends Component {
         books: []
     }
 
+    static defaultProps = {
+        search: []
+    }
+
     componentDidMount() {
         BooksAPI.getAll().then(books => {
             this.setState({
@@ -19,19 +23,19 @@ class Bookshelves extends Component {
         });
     }
 
-    booksByShelf( shelf ) {
-        return this.state.books.filter(book => book.shelf === shelf);
+    booksByShelf = shelf => this.state.books.filter(book => book.shelf === shelf);
+
+    setShelfToBook = ( book, bookFinded ) => {
+        if ( book.id === bookFinded.id) {
+            book.shelf = bookFinded.shelf;
+        }
+
+        return book;
     }
 
     onMoveBook = book => {
         BooksAPI.update( book, book.shelf ).then( () => {
-            const booksChanged = this.state.books.map( b => {
-                if ( b.id === book.id) {
-                    b.shelf = book.shelf;
-                }
-
-                return b;
-            });
+            const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
             
             this.setState({
                 books: booksChanged
@@ -39,10 +43,30 @@ class Bookshelves extends Component {
         } );
     }
 
+    // TODO: Refactor this
+    onSearchBook = query => {
+        if ( query.length < 3 ) {
+            return
+        }
+
+        BooksAPI.search( query ).then( books => {
+            const booksMapped = books.map( book => { 
+                let stateBook = this.state.books.find( b => b.id === book.id );
+                if ( stateBook ) {
+                    book.shelf = stateBook.shelf;
+                }
+
+                return book;
+            } );
+
+            this.search = booksMapped;
+        } )
+    }
+
     render() {
         return(
             <div>
-                <BookSearchBar title='MyReads'/>
+                <BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} />
                 <div className='bookshelves-body'>
                     <Route
                         exact

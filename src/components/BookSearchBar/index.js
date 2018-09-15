@@ -12,14 +12,20 @@ class BookSearchBar extends Component {
         return(
             <div className='search-bar'>
                 <div className='search-title'>{this.props.title}</div>
-                <input className='search-input' type='text' placeholder='Search books' onChange={() => {}} />
+                <div className='search'>
+                    <span className='search-icon'><i className="fas fa-search"/></span>
+                    <input autoFocus={true}  
+                        className='search-input' type='text' placeholder='Search books' 
+                        onChange={(e) => this.props.onSearchBook( e.target.value )} />
+                </div>
             </div>
         )
     }
 }
 
 BookSearchBar.propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    onSearchBook: PropTypes.func.isRequired
 }
 
 export default BookSearchBar;
