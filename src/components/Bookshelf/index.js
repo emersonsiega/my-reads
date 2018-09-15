@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import './Bookshelf.css'
 import Book from "../Book";
@@ -19,15 +20,27 @@ class Bookshelf extends Component {
     }
 
     render() {
+        const hasBooks = () => this.props.books.length > 0;
+
         return(
             <section className='bookshelf'>
                 <div className='shelf-title'>{this.props.shelf}</div>
                 <div className='bookshelf-container'>
                     <div className='books-list'>
-                        {this.props.books.map( book => (
-                            <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook} 
-                                options={this.props.options}/>
-                        ))}
+                        { !hasBooks() && ( 
+                            <div className='empty-message'>
+                                How about 
+                                <Link className='empty-message-link' to='/search'> add </Link> 
+                                some books here?
+                            </div>
+                        )}
+
+                        { hasBooks() && ( 
+                            this.props.books.map( book => (
+                                <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook} 
+                                    options={this.props.options}/>
+                            ))
+                        )}
                     </div>
                 </div>
             </section>

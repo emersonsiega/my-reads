@@ -16,3 +16,21 @@
     flex-flow: row;
     overflow-y: hidden;
 }
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    /* padding: 20px; */
+    color: #989898;
+    font-weight: 200;
+    font-size: 2em;
+}
+
+.empty-message-link {
+    color: #989898;
+    font-weight: 200;
+    padding-right: 6px;
+    padding-left: 6px;
+    cursor: pointer;
+    text-decoration-style: dotted;
+}
