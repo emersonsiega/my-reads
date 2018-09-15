@@ -63,6 +63,10 @@ class App extends Component {
     onMoveBook = (book) => {
         BooksAPI.update( book, book.shelf ).then( () => {
             const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
+            if ( !booksChanged.includes( book ) ) {
+                booksChanged.push(book);
+            }
+            
             this.updateState(booksChanged);
 
             if ( book.shelf && book.shelf !== 'none' ) {
