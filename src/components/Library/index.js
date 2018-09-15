@@ -6,7 +6,13 @@ import Book from "../Book";
 
 class Library extends Component {
     static defaultProps = {
-        books: []
+        books: [],
+        options: [
+            {value: 'currentlyReading', label: 'Currently Reading'},
+            {value: 'wantToRead', label: 'Want to read'},
+            {value: 'read', label: 'Read'},
+            {value: 'none', label: 'None'}
+        ]
     }
 
     render() {
@@ -23,7 +29,8 @@ class Library extends Component {
                 { books.length > 0 && (
                     <div className='library-list'>
                         {books.map( book => (
-                            <Book key={book.id} book={book} onMoveBook={onMoveBook}></Book>
+                            <Book key={book.id} book={book} onMoveBook={onMoveBook} 
+                                options={this.props.options}/>
                         ))}
                     </div>
                 )}

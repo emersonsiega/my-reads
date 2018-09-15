@@ -18,14 +18,16 @@ class App extends Component {
         books: []
     };
 
-    shelves = [
-        { value: 'currentlyReading', name: 'Currently reading' },
-        { value: 'wantToRead', name: 'Want to read' },
-        { value: 'read', name: 'Read' }
-    ]
+    static defaultProps = {
+        shelves: [
+            { value: 'currentlyReading', name: 'Currently reading' },
+            { value: 'wantToRead', name: 'Want to read' },
+            { value: 'read', name: 'Read' }
+        ]
+    }
 
     getShelfLabel = shelf => {
-        return this.shelves.find( s => s.value === shelf );
+        return this.props.shelves.find( s => s.value === shelf );
     }
 
     componentDidMount() {
@@ -37,6 +39,9 @@ class App extends Component {
     setShelfToBook = ( book, bookFinded ) => {
         if ( book.id === bookFinded.id) {
             book.shelf = bookFinded.shelf;
+            if ( book.shelf === 'none' ) {
+                book.shelf = undefined;
+            }
         }
 
         return book;
@@ -59,7 +64,12 @@ class App extends Component {
         BooksAPI.update( book, book.shelf ).then( () => {
             const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
             this.updateState(booksChanged);
-            this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
+
+            if ( book.shelf && book.shelf !== 'none' ) {
+                this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
+            } else {
+                this.showMessage( `Book removed from bookshelf` );
+            }
         } );
     }
 
@@ -79,6 +89,8 @@ class App extends Component {
                 let stateBook = this.state.books.find( b => b.id === book.id );
                 if ( stateBook ) {
                     book.shelf = stateBook.shelf;
+                } else {
+                    book.shelf = 'none';
                 }
 
                 return book;
@@ -111,7 +123,7 @@ class App extends Component {
                     exact
                     path='/'
                     component={ () => (
-                        <Bookshelves books={this.state.books} onMoveBook={this.onMoveBook} shelves={this.shelves} />
+                        <Bookshelves books={this.state.books} onMoveBook={this.onMoveBook} shelves={this.props.shelves} />
                     )}
                 />
                 <Route

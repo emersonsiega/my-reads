@@ -10,6 +10,14 @@ class Bookshelf extends Component {
         books: []
     }
 
+    static defaultProps={
+        options: [
+            {value: 'currentlyReading', label: 'Currently Reading'},
+            {value: 'wantToRead', label: 'Want to read'},
+            {value: 'read', label: 'Read'}
+        ]
+    }
+
     render() {
         return(
             <section className='bookshelf'>
@@ -17,7 +25,8 @@ class Bookshelf extends Component {
                 <div className='bookshelf-container'>
                     <div className='books-list'>
                         {this.props.books.map( book => (
-                            <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook}></Book>
+                            <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook} 
+                                options={this.props.options}/>
                         ))}
                     </div>
                 </div>

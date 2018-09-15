@@ -7,15 +7,9 @@ import './Book.css'
 
 class Book extends Component {
     static defaultProps = {
-        book: {}
+        book: {},
+        options: []
     }
-
-    //TODO: use App shelves constant
-    options = [
-        {value: 'currentlyReading', label: 'Currently Reading'},
-        {value: 'wantToRead', label: 'Want to read'},
-        {value: 'read', label: 'Read'}
-    ]
 
     onMoveBook = (selected, {action}) => {
         let book = this.props.book;
@@ -34,8 +28,7 @@ class Book extends Component {
     }
 
     render() {
-
-        const {book} = this.props;
+        const {book, options} = this.props;
 
         return(
             <article className='book-card'>
@@ -86,11 +79,12 @@ class Book extends Component {
                         isSearchable={false}
                         isClearable={true}
                         placeholder='Move to...'
-                        value={this.options.filter( i => i.value === book.shelf )[0]}
+                        value={options.filter( i => i.value === book.shelf )[0]}
                         onChange={this.onMoveBook}
                         menuPosition='fixed'
                         menuShouldBlockScroll={true}
-                        options={this.options}
+                        options={options}
+                        isOptionDisabled={ option => option.value === 'none' }
                     />
                 </div>
             </article>
@@ -100,7 +94,8 @@ class Book extends Component {
 
 Book.propTypes = {
     book: PropTypes.object.isRequired,
-    onMoveBook: PropTypes.func.isRequired
+    onMoveBook: PropTypes.func.isRequired,
+    options: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default Book;
