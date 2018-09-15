@@ -9,7 +9,21 @@ const reg = new RegExp(/\/search/, 'g');
 
 class BookSearchBar extends Component {
     static defaultProps = {
-        title: 'Title',
+        title: 'Title'
+    }
+
+    state = {
+        value: ''
+    }
+
+    updateValue = e => {
+        let value = e.target.value || ''
+
+        this.setState( {
+            value: value
+        })
+
+        this.props.onSearchBook( value );
     }
 
     render() {
@@ -32,14 +46,20 @@ class BookSearchBar extends Component {
                     { isSearching && (
 
                         <div>
-                            <Link className='search-icon' to='/'>
+                            <Link className='search-icon' onClick={this.updateValue} to='/'>
                                 <span><i className="fas fa-arrow-left"/></span>
                             </Link>
 
                             <DebounceInput className='search-input' type='text' autoFocus={true}
+                                value={this.state.value}
                                 placeholder='Search books' minLength={3} debounceTimeout={300}
-                                onChange={(e) => this.props.onSearchBook( e.target.value )} 
+                                onChange={this.updateValue} 
                             />
+                            
+                            <button className='clear-icon' onClick={this.updateValue}
+                                style={ {visibility: this.state.value.length > 0 ? 'visible' : 'hidden' }  }>
+                                <i className="fas fa-times"/>
+                            </button>
                         </div>
 
                     ) }
