@@ -78,12 +78,10 @@
 }
 
 .book-cover {
-    width: 200px;
-    max-width: 200px;
-    min-width: 50%;
-    height: 276px;
-    min-height: 70%;
-    max-height: 276px;
+    width: 167px;
+    min-width: 167px;
+    height: 230px;
+    min-height: 230px;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 50% 50%;

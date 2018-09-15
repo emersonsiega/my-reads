@@ -23,7 +23,7 @@ class Book extends Component {
 
     render() {
         const limitDescription = ({description}) => {
-            let descr = description.substring(0, 120);
+            let descr = description.substring(0, 100);
             return descr.substring(0, descr.lastIndexOf(' ')).concat('...');
         }
 

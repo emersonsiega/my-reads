@@ -7,11 +7,12 @@
 }
 
 .shelf-title {
-    font-size: 2em;
+    font-size: 1.8em;
     color: #333;
-    border-bottom: 1px solid #6b6b6b3d;
+    border-bottom: 1px solid #dedede;
     margin-bottom: 10px;
     margin-right: 10px;
+    font-weight: 300;
 }
 
 .books-list {
