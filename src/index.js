@@ -9,14 +9,16 @@ import BookSearchBar from "./components/BookSearchBar";
 import Bookshelves from "./components/Bookshelves";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            books: [],
-            lastSearch: localStorage.lastSearch || '',
-            search: []
-        };
-    }
+    state = {
+        search: [],
+        books: []
+    };
+
+    shelves = [
+        { value: 'currentlyReading', name: 'Currently reading' },
+        { value: 'wantToRead', name: 'Want to read' },
+        { value: 'read', name: 'Read' }
+    ]
 
     componentDidMount() {
         BooksAPI.getAll().then(books => {
@@ -25,8 +27,6 @@ class App extends Component {
             })
         });
     }
-
-    booksByShelf = shelf => this.state.books.filter(book => book.shelf === shelf);
 
     setShelfToBook = ( book, bookFinded ) => {
         if ( book.id === bookFinded.id) {
@@ -52,8 +52,6 @@ class App extends Component {
             return
         }
 
-        localStorage.lastSearch = query;
-
         BooksAPI.search( query ).then( books => {
             const booksMapped = books.map( book => { 
                 let stateBook = this.state.books.find( b => b.id === book.id );
@@ -64,7 +62,7 @@ class App extends Component {
                 return book;
             } );
 
-            this.search = booksMapped;
+            this.setState({search: booksMapped});
         } )
     }
 
@@ -75,10 +73,7 @@ class App extends Component {
                     exact
                     path='/'
                     component={ () => (
-                        <div>
-                            <BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} searching={false} />
-                            <Bookshelves onMoveBook={this.onMoveBook} booksByShelf={this.booksByShelf} />
-                        </div>
+                        <Bookshelves books={this.state.books} onMoveBook={this.onMoveBook} shelves={this.shelves} />
                     )}
                 />
                 <Route

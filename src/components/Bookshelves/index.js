@@ -5,26 +5,27 @@ import './Bookshelves.css'
 import Bookshelf from "../Bookshelf";
 
 class Bookshelves extends Component {
+    static defaultProps = {
+        books: []
+    }
+
+    booksByShelf = shelf => this.props.books.filter(book => book.shelf === shelf);
+
     render() {
-        const {booksByShelf, onMoveBook} = this.props;
+        const {shelves, onMoveBook} = this.props;
 
         return(
             <section className='bookshelves-body'>
-                <Bookshelf 
-                    books={booksByShelf('currentlyReading')} 
-                    shelf="Currently Reading"
-                    onMoveBook={onMoveBook} >
-                </Bookshelf>
-                <Bookshelf 
-                    books={booksByShelf('wantToRead')} 
-                    shelf="Want to Read"
-                    onMoveBook={onMoveBook} >
-                </Bookshelf>
-                <Bookshelf 
-                    books={booksByShelf('read')} 
-                    shelf="Read"
-                    onMoveBook={onMoveBook} >
-                </Bookshelf>
+                {
+                    shelves.map( ({name, value}) => (
+                        <Bookshelf 
+                            key={value}
+                            books={this.booksByShelf(value)} 
+                            shelf={name}
+                            onMoveBook={onMoveBook} >
+                        </Bookshelf>
+                    ))
+                }
             </section>
         )
     }
@@ -32,7 +33,8 @@ class Bookshelves extends Component {
 
 Bookshelves.propTypes = {
     onMoveBook: PropTypes.func.isRequired,
-    booksByShelf: PropTypes.func.isRequired
+    shelves: PropTypes.arrayOf(PropTypes.object).isRequired,
+    books: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default Bookshelves;
