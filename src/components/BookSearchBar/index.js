@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import {DebounceInput} from 'react-debounce-input';
 
 import './BookSearchBar.css'
 
@@ -35,8 +36,8 @@ class BookSearchBar extends Component {
                                 <span><i className="fas fa-arrow-left"/></span>
                             </Link>
 
-                            <input className='search-input' type='text' autoFocus={true}
-                                placeholder='Search books' 
+                            <DebounceInput className='search-input' type='text' autoFocus={true}
+                                placeholder='Search books' minLength={3} debounceTimeout={300}
                                 onChange={(e) => this.props.onSearchBook( e.target.value )} 
                             />
                         </div>

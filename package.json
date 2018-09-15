@@ -5,12 +5,14 @@
   "dependencies": {
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
+    "react-debounce-input": "^3.2.0",
     "react-dom": "^16.4.2",
     "react-rater": "^5.0.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "react-select": "^2.0.0",
     "react-star-rating-component": "^1.4.1",
+    "react-toastify": "^4.3.1",
     "typeface-roboto": "0.0.54"
   },
   "scripts": {

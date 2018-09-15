@@ -46,7 +46,8 @@ class App extends Component {
     // TODO: Refactor this
     onSearchBook = query => {
         if ( query.length < 3 ) {
-            return
+            this.setState({ search: [] })
+            return;
         }
 
         BooksAPI.search( query ).then( books => {
@@ -96,7 +97,6 @@ class App extends Component {
     }
 }
 
-//TODO: Continue...
 ReactDOM.render(
     <BrowserRouter>
         <App />
