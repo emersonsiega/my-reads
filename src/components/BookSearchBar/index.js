@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import './BookSearchBar.css'
 
 class BookSearchBar extends Component {
     static defaultProps = {
-        title: 'Title'
+        title: 'Title',
+        value: ''
     }
 
     render() {
@@ -13,10 +15,32 @@ class BookSearchBar extends Component {
             <div className='search-bar'>
                 <div className='search-title'>{this.props.title}</div>
                 <div className='search'>
-                    <span className='search-icon'><i className="fas fa-search"/></span>
-                    <input autoFocus={true}  
-                        className='search-input' type='text' placeholder='Search books' 
-                        onChange={(e) => this.props.onSearchBook( e.target.value )} />
+
+                    { !this.props.searching && (
+                        
+                        <Link className='search-icon' to='/search'>
+                            <span><i className="fas fa-search"/></span>
+                        </Link>
+
+                    )}
+
+                    { this.props.searching && (
+
+                        <Link className='search-icon' to='/'>
+                            <span><i className="fas fa-arrow-left"/></span>
+                        </Link>
+
+                     )}
+
+                    { this.props.searching && (
+
+                        <input className='search-input' type='text' autoFocus={true}  
+                            value={this.props.value}
+                            placeholder='Search books' 
+                            onChange={(e) => this.props.onSearchBook( e.target.value )} />
+
+                    ) }
+
                 </div>
             </div>
         )
@@ -25,7 +49,9 @@ class BookSearchBar extends Component {
 
 BookSearchBar.propTypes = {
     title: PropTypes.string.isRequired,
-    onSearchBook: PropTypes.func.isRequired
+    onSearchBook: PropTypes.func.isRequired,
+    value: PropTypes.string,
+    searching: PropTypes.bool.isRequired
 }
 
 export default BookSearchBar;

@@ -34,7 +34,7 @@ class Book extends Component {
         ]
 
         return(
-            <div className='book-card'>
+            <article className='book-card'>
                 <div className='book-header'>
                     <label className='book-title'>{this.props.book.title}</label>
                     <label className='book-subtitle'>{this.props.book.subtitle}</label>
@@ -89,7 +89,7 @@ class Book extends Component {
                         options={options}
                     />
                 </div>
-            </div>
+            </article>
         )
     }
 }

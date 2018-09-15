@@ -12,7 +12,7 @@ class Bookshelf extends Component {
 
     render() {
         return(
-            <div className='bookshelf'>
+            <section className='bookshelf'>
                 <div className='shelf-title'>{this.props.shelf}</div>
                 <div className='bookshelf-container'>
                     <div className='books-list'>
@@ -21,7 +21,7 @@ class Bookshelf extends Component {
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
         )
     }
 }
