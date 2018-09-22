@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from "prop-types";
 
 import './Library.css'
-import Book from "../Book";
+import Book from "../../components/Book";
 
 class Library extends Component {
     static defaultProps = {

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import './Bookshelf.css'
-import Book from "../Book";
+import Book from "../../components/Book";
 
 class Bookshelf extends Component {
     static defaultProps = {
@@ -27,20 +27,18 @@ class Bookshelf extends Component {
                 <div className='shelf-title'>{this.props.shelf}</div>
                 <div className='bookshelf-container'>
                     <div className='books-list'>
-                        { !hasBooks() && ( 
+                        { hasBooks() ?
+                            this.props.books.map( book => (
+                                <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook} 
+                                    options={this.props.options}/>
+                            )) 
+                            :
                             <div className='empty-message'>
                                 How about 
                                 <Link className='empty-message-link' to='/search'> add </Link> 
                                 some books here?
                             </div>
-                        )}
-
-                        { hasBooks() && ( 
-                            this.props.books.map( book => (
-                                <Book key={book.id} book={book} onMoveBook={this.props.onMoveBook} 
-                                    options={this.props.options}/>
-                            ))
-                        )}
+                        }
                     </div>
                 </div>
             </section>

@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import 'typeface-roboto'
 
-import App from "./App";
+import App from "./screens/App";
 
 ReactDOM.render(
     <BrowserRouter>

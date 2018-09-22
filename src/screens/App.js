@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import { Route } from "react-router-dom";
 
 import './App.css'
-import * as BooksAPI from "./api/BooksAPI";
-import BookSearchBar from "./components/BookSearchBar";
-import Bookshelves from "./components/Bookshelves";
-import Library from "./components/Library";
-import {Toast, ShowMessage} from "./components/Toast";
+import * as BooksAPI from "../api/BooksAPI";
+import BookSearchBar from "../components/BookSearchBar";
+import {Toast, ShowMessage} from "../components/Toast";
+import Bookshelves from "../containers/Bookshelves";
+import Library from "../containers/Library";
 
 class App extends Component {
     constructor(props) {

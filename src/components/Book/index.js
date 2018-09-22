@@ -15,7 +15,8 @@ class Book extends Component {
 
     static defaultProps = {
         book: {},
-        options: []
+        options: [],
+        coverPlaceholder: '/img/image-placeholder.png'
     }
 
     handleMoveBook (selected, {action}) {
@@ -35,70 +36,73 @@ class Book extends Component {
             return `${ratingsCount} ratings`
     }
 
-    limitDescription = ({description = ''}) => {
-        if ( description.length === 0 ) {
-            return 'No description provided...';
-        }
-
-        let descr = description.substring(0, 140);
-        return descr.trim().concat('...');
     }
 
+    limitDescription = (description) => description.substring(0, 140).trim().concat('...');
+
     render() {
-        const {book, options} = this.props;
+        const {options, coverPlaceholder} = this.props;
+        const {
+            id,
+            title,
+            subtitle,
+            imageLinks = {thumbnail: coverPlaceholder},
+            authors = ['Unknown'],
+            description = 'No description provided',
+            averageRating = 0,
+            ratingsCount = 0,
+            previewLink,
+            shelf
+        } = this.props.book;
 
         return (
             <article className='book-card'>
                 <div className='book-header'>
-                    <label className='book-title'>{book.title}</label>
-                    <label className='book-subtitle'>{book.subtitle}</label>
+                    <label className='book-title'>{title}</label>
+                    <label className='book-subtitle'>{subtitle}</label>
                 </div>
                 <div className='book-content'>
                     <div className='book-cover-container'>
-                        <ProgressiveImage src={book.imageLinks ? book.imageLinks.thumbnail : '/img/image-placeholder.png'} placeholder='/img/image-placeholder.png'>
+                        <ProgressiveImage src={imageLinks.thumbnail} placeholder={coverPlaceholder}>
                             {(src, loading) => (
                                 <img className='book-cover' style={{opacity: loading ? 0.5 : 1 }} src={src} alt='Book cover'/>
                             )}
                         </ProgressiveImage>
                     </div>
                     <div className='book-details'>
-                        <label className='book-author'>{book.authors ? book.authors.join(', ') : 'Unknown'}</label>
-                        <label className='book-description'>{this.limitDescription(book)}</label>
+                        <label className='book-author'>{authors.join(', ')}</label>
+                        <label className='book-description'>{this.limitDescription(description)}</label>
                         <div className='book-rating'>
                             <div className='book-rating-stars'>
                                 <StarRatingComponent
                                     name='rating'
-                                    value={book.averageRating}
+                                    value={averageRating}
                                     starCount={5}
                                     editing={false}
                                     starColor="#ffb400"
-                                    emptyStarColor="#ffb400"
-                                    renderStarIcon={(index, value) => {
-                                        return (
+                                    emptyStarColor="#848484"
+                                    renderStarIcon={(index, value) => 
                                         <span style={{fontSize: 21}}>
                                             <i className={index <= value ? 'fas fa-star' : 'far fa-star'} />
                                         </span>
-                                        );
-                                    }}
-                                    renderStarIconHalf={() => {
-                                        return (
+                                    }
+                                    renderStarIconHalf={() =>
                                         <span style={{fontSize: 21}}>
                                             <span style={{position: 'absolute'}}><i className="far fa-star" /></span>
                                             <span><i className="fas fa-star-half" />
                                             </span>
                                         </span>
-                                        );
-                                    }}
+                                    }
                                 />
                             </div>
                             <div className='book-rating-info'>
-                                <label>{this.getRatings(book)}</label>
+                                <label>{this.getRatings(ratingsCount, id)}</label>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='book-footer'>
-                    <a className='book-link book-footer-content' target='_blank' href={book.previewLink}>
+                    <a className='book-link book-footer-content' target='_blank' href={previewLink}>
                         Preview book
                     </a>
                     <Select className='book-options book-footer-content'
@@ -106,12 +110,12 @@ class Book extends Component {
                         isSearchable={false}
                         isClearable={true}
                         placeholder='Move to...'
-                        value={options.filter( i => i.value === book.shelf )[0]}
+                        value={options.filter( i => i.value === shelf )[0]}
                         onChange={this.handleMoveBook}
                         menuPosition='fixed'
                         menuShouldBlockScroll={true}
                         options={options}
-                        isOptionDisabled={ option => option.value === 'none' } />
+                        isOptionDisabled={option => option.value === 'none'} />
                 </div>
             </article>
         )
