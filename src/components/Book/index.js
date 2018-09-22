@@ -27,15 +27,19 @@ class Book extends Component {
         this.props.onMoveBook( book );
     }
 
-    getRatings = ({ratingsCount = 0}) => {
-        if ( ratingsCount === 0 )
-            return `No rating`
-        else if ( ratingsCount === 1 )
-            return `${ratingsCount} rating`
-        else
-            return `${ratingsCount} ratings`
-    }
+    getRatings = (ratingsCount, id) => {
+        let message = 'No ratings.'
+        message = `${ratingsCount} ${ratingsCount > 0 && ratingsCount === 1 ? 'rating.' : 'ratings.'}`
 
+        const link = `https://books.google.com.br/books?op=lookup&id=${id}`;
+        return (
+            <div>
+                {message}
+                <a style={{paddingLeft: '2px'}} className='book-link' target='_blank' href={link}>
+                    { ratingsCount === 0 ? `Be the first!` : `Write a review` }
+                </a>
+            </div>
+        )
     }
 
     limitDescription = (description) => description.substring(0, 140).trim().concat('...');
