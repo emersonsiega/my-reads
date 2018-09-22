@@ -49,7 +49,7 @@ class Book extends Component {
         <div>
             {
                 authors.map( (author, index, arr) =>
-                    <a key={author} style={{paddingLeft: '2px'}} className='book-link' target='_blank' 
+                    <a key={author} style={{marginLeft: '2px'}} className='book-link' target='_blank' 
                         alt={`Search books from ${author}`}
                         href={`https://www.google.com.br/search?tbm=bks&q=inauthor:"${author}"`}>
                         {author}{arr.length -1 !== index ? ', ' : ''}
