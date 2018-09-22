@@ -18,3 +18,29 @@
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
+
+.search-suggestions {
+    bottom: 0px;
+    position: absolute;
+    margin: 0px 150px 10px 150px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.search-suggestion-title {
+    font-weight: 300;
+    color: #a9a7a7;
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+}
+
+.search-term {
+    font-weight: 300;
+    font-size: 0.9em;
+    color: #a9a7a7;
+    padding-left: 10px;
+}
