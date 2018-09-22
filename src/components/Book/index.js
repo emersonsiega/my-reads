@@ -29,13 +29,16 @@ class Book extends Component {
 
     getRatings = (ratingsCount, id) => {
         let message = 'No ratings.'
-        message = `${ratingsCount} ${ratingsCount > 0 && ratingsCount === 1 ? 'rating.' : 'ratings.'}`
+        if ( ratingsCount > 0 ) {
+            message = `${ratingsCount} ${ratingsCount === 1 ? 'rating.' : 'ratings.'}`
+        }
 
         const link = `https://books.google.com.br/books?op=lookup&id=${id}`;
         return (
             <div>
                 {message}
-                <a style={{paddingLeft: '2px'}} className='book-link' target='_blank' href={link}>
+                <a style={{paddingLeft: '2px'}} className='book-link' target='_blank' 
+                    href={link} alt="Write a review">
                     { ratingsCount === 0 ? `Be the first!` : `Write a review` }
                 </a>
             </div>
