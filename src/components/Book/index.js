@@ -45,6 +45,19 @@ class Book extends Component {
         )
     }
 
+    getAuthors = (authors) =>
+        <div>
+            {
+                authors.map( (author, index, arr) =>
+                    <a key={author} style={{paddingLeft: '2px'}} className='book-link' target='_blank' 
+                        alt={`Search books from ${author}`}
+                        href={`https://www.google.com.br/search?tbm=bks&q=inauthor:"${author}"`}>
+                        {author}{arr.length -1 !== index ? ', ' : ''}
+                    </a>
+                )
+            }
+        </div>
+
     limitDescription = (description) => description.substring(0, 140).trim().concat('...');
 
     render() {
@@ -77,7 +90,7 @@ class Book extends Component {
                         </ProgressiveImage>
                     </div>
                     <div className='book-details'>
-                        <label className='book-author'>{authors.join(', ')}</label>
+                        <label className='book-author'>{this.getAuthors(authors)}</label>
                         <label className='book-description'>{this.limitDescription(description)}</label>
                         <div className='book-rating'>
                             <div className='book-rating-stars'>
