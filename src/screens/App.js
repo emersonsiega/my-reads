@@ -94,12 +94,13 @@ class App extends Component {
         }
 
         BooksAPI.search( query ).then( books => {
+            let booksMapped = []
+
             if ( books.error ) {
                 ShowMessage( 'No results! Try a different search =)' );
-                return;
+            } else {
+                booksMapped = this.mapBooksToShelf( books );
             }
-
-            const booksMapped = this.mapBooksToShelf( books );
 
             this.setState({search: booksMapped});
         })
