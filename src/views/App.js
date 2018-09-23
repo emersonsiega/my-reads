@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Route } from "react-router-dom";
 
 import './App.css'
-import * as BooksAPI from "../api/BooksAPI";
+import * as BooksAPI from "../service/BooksAPI";
 import BookSearchBar from "../components/BookSearchBar";
 import {Toast, ShowMessage} from "../components/Toast";
 import Bookshelves from "../containers/Bookshelves";
