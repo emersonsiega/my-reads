@@ -4,7 +4,7 @@ import React from 'react'
 import Bookshelves from "../../Bookshelves"
 
 // TODO: how to create a setupFile for ezyme in an ejected project?
-import Enzyme, { shallow, mount } from 'enzyme'
+import Enzyme, { shallow } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 Enzyme.configure({ adapter: new Adapter() })
 
