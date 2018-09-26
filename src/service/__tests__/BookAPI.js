@@ -1,8 +1,6 @@
 import mockAxios from "axios";
 import BooksAPI from "../BooksAPI";
 
-import { localstorage } from "jest-localstorage-mock";
-
 describe('BooksAPI', () => {
 
     it('calls getAll and return three books', async () => {
