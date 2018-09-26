@@ -1,6 +1,8 @@
 import mockAxios from "axios";
 import BooksAPI from "../BooksAPI";
 
+import { localstorage } from "jest-localstorage-mock";
+
 describe('BooksAPI', () => {
 
     it('calls getAll and return three books', async () => {
@@ -141,6 +143,15 @@ describe('BooksAPI', () => {
 
         expect(book).toBeUndefined()
         expect(mockAxios.get).toHaveBeenCalledTimes(4)
+    })
+
+    it('generate a new token in localStorage', () => {
+        localStorage.setItem.mockClear();
+        const token = BooksAPI.getToken()
+
+        expect(token).toBeDefined()
+        expect(token).toHaveLength(8)
+        expect(localStorage.getItem('token')).toEqual(token)
     })
 
 })
