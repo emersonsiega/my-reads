@@ -37,15 +37,17 @@ class App extends Component {
     }
 
     componentDidMount() {
-        BooksAPI.getAll(
-            (books) => {
-                this.setState({
-                    books: books,
-                    loading: false
-                });
-            }, 
-            () => ShowMessage('Failed to load books! =/')
-        );
+        BooksAPI.getAll().then( (books) => {
+            if (!books) {
+                ShowMessage('Failed to load books! =/')
+                return
+            }
+
+            this.setState({
+                books: books,
+                loading: false
+            });
+        });
     }
 
     setShelfToBook = ( book, bookFinded ) => {
@@ -61,8 +63,11 @@ class App extends Component {
     }
 
     onMoveBook (book) {
-        BooksAPI.update( book, book.shelf, (data) => {
-            if ( data && data[book.shelf].length === 0 ) return;
+        BooksAPI.update( book, book.shelf).then( (data) => {
+            if ( !data || (data && data[book.shelf].length === 0) ) {
+                ShowMessage(`Failed to move Book! =/`)
+                return
+            }
 
             // TODO: improve this method
             const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
@@ -77,10 +82,7 @@ class App extends Component {
             } else {
                 ShowMessage( `Book removed from bookshelf` );
             }
-        },
-        () => {
-            ShowMessage( `Failed to move Book! =/` );
-        } );
+        });
     }
 
     mapBooksToShelf(books) {
@@ -101,23 +103,23 @@ class App extends Component {
             return;
         }
 
-        BooksAPI.search( query, 
-            (books) => {
-                let booksMapped = []
+        BooksAPI.search( query ).then((books) => {
+            let booksMapped = []
 
-                if ( books.error ) {
-                    ShowMessage( 'No results! Try a different search =)' );
-                } else {
-                    booksMapped = this.mapBooksToShelf( books );
-                }
-
-                this.setState({search: booksMapped});
-            },
-            () => { 
-                this.setState({search: []});
-                ShowMessage(`Failed to search books! =/`) 
+            if ( !books ) {
+                this.setState({ search: [] })
+                ShowMessage(`Failed to search books! =/`)
+                return
             }
-        )
+
+            if ( books.error ) {
+                ShowMessage( 'No results! Try a different search =)' )
+            } else {
+                booksMapped = this.mapBooksToShelf( books )
+            }
+
+            this.setState({search: booksMapped})
+        })
     }
 
     render() {
