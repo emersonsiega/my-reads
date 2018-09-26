@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import { Route } from "react-router-dom";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './App.css'
 import BooksAPI from "../service/BooksAPI";
 import BookSearchBar from "../components/BookSearchBar";
-import {Toast, ShowMessage} from "../components/Toast";
 import Bookshelves from "../containers/Bookshelves";
 import Library from "../containers/Library";
 
@@ -39,7 +41,7 @@ class App extends Component {
     componentDidMount() {
         BooksAPI.getAll().then( (books) => {
             if (!books) {
-                ShowMessage('Failed to load books! =/')
+                showMessage('Failed to load books! =/')
                 return
             }
 
@@ -62,10 +64,21 @@ class App extends Component {
         return book;
     }
 
+    showMessage = message => {
+        toast.info(message, {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false
+        })
+    }
+
     onMoveBook (book) {
         BooksAPI.update( book, book.shelf).then( (data) => {
             if ( !data || (data && data[book.shelf].length === 0) ) {
-                ShowMessage(`Failed to move Book! =/`)
+                showMessage(`Failed to move Book! =/`)
                 return
             }
 
@@ -78,9 +91,9 @@ class App extends Component {
             this.setState({ books: booksChanged })
 
             if ( book.shelf && book.shelf !== 'none' ) {
-                ShowMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
+                showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
             } else {
-                ShowMessage( `Book removed from bookshelf` );
+                showMessage( `Book removed from bookshelf` );
             }
         });
     }
@@ -108,12 +121,12 @@ class App extends Component {
 
             if ( !books ) {
                 this.setState({ search: [] })
-                ShowMessage(`Failed to search books! =/`)
+                showMessage(`Failed to search books! =/`)
                 return
             }
 
             if ( books.error ) {
-                ShowMessage( 'No results! Try a different search =)' )
+                showMessage( 'No results! Try a different search =)' )
             } else {
                 booksMapped = this.mapBooksToShelf( books )
             }
@@ -126,7 +139,11 @@ class App extends Component {
         return (
             <div>
                 <Route render={ (props) => (<BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} {...props} />)} />
-                <Route component={Toast}/>
+                <Route component={
+                    <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop 
+                        closeOnClick rtl={false} pauseOnVisibilityChange draggable={false} pauseOnHover 
+                    />
+                }/>
                 <Route exact path='/' render={ () => (
                     <div>
                         {this.state.loading ?
