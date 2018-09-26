@@ -6,7 +6,8 @@ import Bookshelf from "../Bookshelf";
 
 class Bookshelves extends Component {
     static defaultProps = {
-        books: []
+        books: [],
+        shelves: []
     }
 
     booksByShelf = shelf => this.props.books.filter(book => book.shelf === shelf);
