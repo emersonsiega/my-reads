@@ -139,18 +139,14 @@ const booksArray = [
 ]
 
 const mockAxios = {
-    get: jest.fn((url) => {
-        let data = {};
-        
-        if ( url === '/books' ) {
-            data.books = booksArray
-        } else {
-            data.book = booksArray[0]
-        }
-
-        return Promise.resolve({data})
-    }),
-    put: jest.fn( () => Promise.resolve({ }) ),
+    get: jest.fn(() =>
+        Promise.resolve({
+            data: {
+                books: booksArray
+            }
+        })
+    ),
+    put: jest.fn(() => Promise.resolve({})),
     post: jest.fn( (url, param) => {
         const search = JSON.parse(param).query.toLowerCase();
         const books = booksArray.filter( book => book.title.toLowerCase().startsWith( search ) )

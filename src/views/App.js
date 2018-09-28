@@ -41,7 +41,7 @@ class App extends Component {
     componentDidMount() {
         BooksAPI.getAll().then( (books) => {
             if (!books) {
-                showMessage('Failed to load books! =/')
+                this.showMessage('Failed to load books! =/')
                 return
             }
 
@@ -78,22 +78,24 @@ class App extends Component {
     onMoveBook (book) {
         BooksAPI.update( book, book.shelf).then( (data) => {
             if ( !data || (data && data[book.shelf].length === 0) ) {
-                showMessage(`Failed to move Book! =/`)
+                this.showMessage(`Failed to move Book! =/`)
                 return
             }
 
             // TODO: improve this method
             const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
+            console.log( booksChanged )
             if ( !booksChanged.includes( book ) ) {
+                console.log( `caiu no includes` )
                 booksChanged.push(book);
             }
             
             this.setState({ books: booksChanged })
 
             if ( book.shelf && book.shelf !== 'none' ) {
-                showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
+                this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
             } else {
-                showMessage( `Book removed from bookshelf` );
+                this.showMessage( `Book removed from bookshelf` );
             }
         });
     }
@@ -113,7 +115,7 @@ class App extends Component {
     onSearchBook(query) {
         if ( query.length < 3 ) {
             this.setState({ search: [] })
-            return;
+            return
         }
 
         BooksAPI.search( query ).then((books) => {
@@ -121,12 +123,12 @@ class App extends Component {
 
             if ( !books ) {
                 this.setState({ search: [] })
-                showMessage(`Failed to search books! =/`)
+                this.showMessage(`Failed to search books! =/`)
                 return
             }
 
             if ( books.error ) {
-                showMessage( 'No results! Try a different search =)' )
+                this.showMessage( 'No results! Try a different search =)' )
             } else {
                 booksMapped = this.mapBooksToShelf( books )
             }
@@ -139,11 +141,11 @@ class App extends Component {
         return (
             <div>
                 <Route render={ (props) => (<BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} {...props} />)} />
-                <Route component={
+                <Route render={ () => (
                     <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop 
                         closeOnClick rtl={false} pauseOnVisibilityChange draggable={false} pauseOnHover 
                     />
-                }/>
+                )}/>
                 <Route exact path='/' render={ () => (
                     <div>
                         {this.state.loading ?

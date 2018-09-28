@@ -50,8 +50,8 @@ class BooksAPI {
     })
 
     return request
-      .then( response => response.data.books )
-      .catch( err => err.response )
+      .then( response => response.data )
+      .catch(err => err.response )
   }
 
   static search( query ) {
