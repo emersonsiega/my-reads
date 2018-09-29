@@ -24,6 +24,7 @@ class App extends Component {
         this.onMoveBook = this.onMoveBook.bind(this)
         this.onSearchBook = this.onSearchBook.bind(this)
         this.mapBooksToShelf = this.mapBooksToShelf.bind(this)
+        this.mapShelfByBookId = this.mapShelfByBookId.bind(this)
     }
 
     static defaultProps = {
@@ -52,18 +53,6 @@ class App extends Component {
         });
     }
 
-    setShelfToBook = ( book, bookFinded ) => {
-        if ( book.id === bookFinded.id) {
-            book.shelf = bookFinded.shelf;
-
-            if ( book.shelf === 'none' ) {
-                book.shelf = undefined;
-            }
-        }
-
-        return book;
-    }
-
     showMessage = message => {
         toast.info(message, {
             position: "bottom-right",
@@ -76,23 +65,30 @@ class App extends Component {
     }
 
     onMoveBook (book) {
-        BooksAPI.update( book, book.shelf).then( (data) => {
-            if ( !data || (data && data[book.shelf].length === 0) ) {
+        BooksAPI.update( book, book.shelf ).then( (data) => {
+            if ( !data ) {
                 this.showMessage(`Failed to move Book! =/`)
                 return
             }
 
-            // TODO: improve this method
-            const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
-            console.log( booksChanged )
-            if ( !booksChanged.includes( book ) ) {
-                console.log( `caiu no includes` )
-                booksChanged.push(book);
-            }
-            
-            this.setState({ books: booksChanged })
+            const {books} = this.state
+            const existsInState = books.filter( b => b.id === book.id ).length > 0
+            const existsInApi = book.shelf !== 'none' && data[book.shelf].includes(book.id)
 
-            if ( book.shelf && book.shelf !== 'none' ) {
+            if ( !existsInState && existsInApi ) {
+                books.push(book);
+                this.setState({ books: books })
+            } else if ( existsInState ) {
+                const booksChanged = books.filter( b => b.id !== book.id )
+
+                if ( existsInApi ) {
+                    booksChanged.push(book)
+                }
+
+                this.setState({ books: booksChanged })
+            }
+
+            if ( existsInApi ) {
                 this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
             } else {
                 this.showMessage( `Book removed from bookshelf` );
@@ -100,21 +96,28 @@ class App extends Component {
         });
     }
 
+    mapShelfByBookId() {
+        const shelfByBook = this.state.books.reduce((acc, cv) => {
+            acc[cv.id] = cv.shelf; 
+            return acc
+        }, {})
+
+        return shelfByBook;
+    }
+
     mapBooksToShelf(books) {
-        const booksMapped = books.map( book => { 
-            //TODO: find a way to avoid this find inside a map
-            let stateBook = this.state.books.find( b => b.id === book.id );
-            book.shelf = stateBook ? stateBook.shelf : 'none';
+        const shelfByBook = this.mapShelfByBookId()
 
-            return book;
-        } );
+        const booksWithShelf = books.map(b => {
+            b.shelf = shelfByBook[b.id] ? shelfByBook[b.id] : 'none'
+            return b
+        })
 
-        return booksMapped;
+        return booksWithShelf;
     }
 
     onSearchBook(query) {
-        if ( query.length < 3 ) {
-            this.setState({ search: [] })
+        if (query.length === 0) {
             return
         }
 
