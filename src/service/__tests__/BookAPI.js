@@ -3,7 +3,7 @@ import BooksAPI from "../BooksAPI";
 
 describe('BooksAPI', () => {
 
-    it('calls getAll and return three books', async () => {
+    it('calls getAll and return three books', async (done) => {
         const books = await BooksAPI.getAll();
 
         expect(books).toBeDefined()
@@ -14,9 +14,10 @@ describe('BooksAPI', () => {
         expect(books[2].shelf).toBe('wantToRead')
 
         expect(mockAxios.get).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls getAll and expect it fails', async () => {
+    it('calls getAll and expect it fails', async (done) => {
         mockAxios.get = jest.fn().mockImplementationOnce( () =>
             Promise.reject({
                 error: "FAILED!"
@@ -28,10 +29,10 @@ describe('BooksAPI', () => {
         expect(books).toBeUndefined()
         expect(mockAxios.get).toHaveBeenCalledTimes(1)
 
-        
+        done()
     })
 
-    it('calls update and change book from shelf', async () => {
+    it('calls update and change book from shelf', async (done) => {
         const book = {
             "title": "The Linux Command Line",
             "subtitle": "A Complete Introduction",
@@ -60,9 +61,10 @@ describe('BooksAPI', () => {
         expect(data.read).toHaveLength(1)
 
         expect(mockAxios.put).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls update and expect it fails', async () => {
+    it('calls update and expect it fails', async (done) => {
         const book = {
             "title": "The Linux Command Line",
             "subtitle": "A Complete Introduction",
@@ -85,32 +87,22 @@ describe('BooksAPI', () => {
 
         expect(books).toBeUndefined()
         expect(mockAxios.put).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls search and find two books', async () => {
-        const books = await BooksAPI.search('the')
-
-        expect(books).toBeDefined()
-        expect(books.length).toBe(2)
-
-        expect(books[0].title).toEqual("The Linux Command Line")
-        expect(books[1].title).toEqual("The Cuckoo's Calling")
-
-        expect(mockAxios.post).toHaveBeenCalledTimes(1)
-    })
-
-    it('calls search and find one book', async () => {
-        const books = await BooksAPI.search('Learning')
+    it('calls search and find one book', async (done) => {
+        const books = await BooksAPI.search('The Linux')
 
         expect(books).toBeDefined()
         expect(books.length).toBe(1)
 
-        expect(books[0].title).toEqual("Learning Web Development with React and Bootstrap")
+        expect(books[0].title).toEqual("The Linux Command Line")
 
-        expect(mockAxios.post).toHaveBeenCalledTimes(2)
+        expect(mockAxios.post).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls search and expect it fails', async () => {
+    it('calls search and expect it fails', async (done) => {
         mockAxios.post = jest.fn(() =>
             Promise.reject({
                 error: "FAILED"
@@ -121,9 +113,10 @@ describe('BooksAPI', () => {
 
         expect(books).toBeUndefined()
         expect(mockAxios.post).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls get and receive one book', async () => { 
+    it('calls get and receive one book', async (done) => { 
         mockAxios.get = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 data: {
@@ -186,9 +179,10 @@ describe('BooksAPI', () => {
         expect(book.shelf).toBe('read')
 
         expect(mockAxios.get).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('calls get and expect it fails', async () => {
+    it('calls get and expect it fails', async (done) => {
         mockAxios.get = jest.fn(() =>
             Promise.reject({
                 error: "FAILED"
@@ -199,15 +193,17 @@ describe('BooksAPI', () => {
 
         expect(book).toBeUndefined()
         expect(mockAxios.get).toHaveBeenCalledTimes(1)
+        done()
     })
 
-    it('generate a new token in localStorage', () => {
+    it('generate a new token in localStorage', (done) => {
         localStorage.setItem.mockClear();
         const token = BooksAPI.getToken()
 
         expect(token).toBeDefined()
         expect(token).toHaveLength(8)
         expect(localStorage.getItem('token')).toEqual(token)
+        done()
     })
 
 })

@@ -104,7 +104,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
-    "jest": "^20.0.4",
+    "jest": "^23.6.0",
     "jest-localstorage-mock": "^2.2.0",
     "jsdom": "12.0.0",
     "jsdom-global": "3.0.2"

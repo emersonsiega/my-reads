@@ -1,29 +1,31 @@
 import 'jsdom-global/register'
 import React from 'react'
-import { MemoryRouter, HashRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import mockAxios from "axios";
 
 import App from "../App"
 
 // TODO: how to create a setupFile for ezyme in an ejected project?
-import Enzyme, { shallow, mount, render } from 'enzyme'
+import Enzyme, { shallow, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 Enzyme.configure({ adapter: new Adapter() })
 
 describe('<App />', () => {
-    it('shallow renders correctly', () => {
+    it('shallow renders correctly', (done) => {
         expect(shallow(<App />))
+        done()
     })
 
-    it('render component correctly', () => {
+    it('render component correctly', (done) => {
         expect(mount(
             <MemoryRouter initialEntries={['/']}>
                 <App />
             </MemoryRouter>
         ))
+        done()
     })
 
-    it('renders a BookSearchBar component', () => {
+    it('renders a BookSearchBar component', (done) => {
         const wrapper = mount(
             <MemoryRouter initialEntries={['/']}>
                 <App />
@@ -31,9 +33,10 @@ describe('<App />', () => {
         )
 
         expect(wrapper.find('BookSearchBar')).toBeDefined()
+        done()
     })
 
-    it('renders a Library component', () => {
+    it('renders a Library component', (done) => {
         const wrapper = mount(
             <MemoryRouter initialEntries={['/search']}>
                 <App />
@@ -41,9 +44,10 @@ describe('<App />', () => {
         )
 
         expect(wrapper.find('Library')).toBeDefined()
+        done()
     })
 
-    it('renders a Bookshelves component', () => {
+    it('renders a Bookshelves component', (done) => {
         const wrapper = mount(
             <MemoryRouter initialEntries={['/']}>
                 <App />
@@ -51,9 +55,10 @@ describe('<App />', () => {
         )
 
         expect(wrapper.find('Bookshelves')).toBeDefined()
+        done()
     })
 
-    it('renders with three books', async () => {
+    it('renders with three books', (done) => {
         const wrapper = mount(
             <MemoryRouter initialEntries={['/']}>
                 <App />
@@ -62,16 +67,17 @@ describe('<App />', () => {
 
         let app = wrapper.find('App').instance()
 
-        await setTimeout(() => {
+        setTimeout(() => {
             expect(app.state).toBeDefined()
             expect(app.state.books).toHaveLength(3)
-        }, 500)
+            done()
+        }, 300)
     })
     
-    it('render fails to get books', async () => {
-        mockAxios.get = jest.fn().mockImplementationOnce(() =>
+    it('render fails to get books', (done) => {
+        mockAxios.get = jest.fn(mockAxios.get).mockImplementationOnce(() =>
             Promise.reject({
-                books: undefined 
+                books: undefined
             })
         )
 
@@ -81,18 +87,19 @@ describe('<App />', () => {
             </MemoryRouter>
         )
 
-        let app = wrapper.find('App').instance()
+        const app = wrapper.find('App').instance()
 
-        await setTimeout(() => {
+        process.nextTick(() => {
             expect(app.state).toBeDefined()
             expect(app.state.books).toHaveLength(0)
             expect(app.state.loading).toBeTruthy()
             expect(mockAxios.get).toHaveBeenCalledTimes(1)
-        }, 500)
+            done()
+        })
     })
 
-    it('fails to search books', async () => {
-        mockAxios.post = jest.fn().mockImplementationOnce(() =>
+    it('fails to search books', (done) => {
+        mockAxios.post = jest.fn(mockAxios.post).mockImplementationOnce(() =>
             Promise.reject({
                 response: undefined
             })
@@ -105,106 +112,258 @@ describe('<App />', () => {
         )
         
         wrapper.find('input').simulate('change', { target: { value: 'linux' } })
+        
+        const app = wrapper.find('App').instance()
+
+        setTimeout(() => {
+            expect(app.state).toBeDefined()
+            expect(app.state.search).toHaveLength(0)
+            done()
+        }, 300)
+    })
+
+    it('error to search books', (done) => {
+        mockAxios.post = jest.fn(mockAxios.post).mockImplementationOnce(() =>
+            Promise.resolve({
+                data: {
+                    books: {
+                        error: `can't find books`
+                    }
+                }
+            })
+        )
+
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/search']}>
+                <App />
+            </MemoryRouter>
+        )
+
+        wrapper.find('input').simulate('change', { target: { value: 'linux' } })
+
+        const app = wrapper.find('App').instance()
+
+        setTimeout(() => {
+            expect(app.state).toBeDefined()
+            expect(app.state.search).toHaveLength(0)
+            done()
+        }, 300)
+    })
+
+    it('searches one book', (done) => {
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/search']}>
+                <App />
+            </MemoryRouter>
+        )
+
+        wrapper.find('input').simulate('change', {target: {value: 'The Linux'}})
+
+        const app = wrapper.find('App').instance()
+
+        setTimeout( () => {    
+            expect(app.state).toBeDefined()
+            expect(app.state.search).toHaveLength(1)
+            expect(app.state.search[0].title).toBe('The Linux Command Line')
+            done()
+        }, 300)
+    })
+
+    it('moves book between shelves', (done) => {
+        mockAxios.put = jest.fn(mockAxios.put).mockImplementationOnce(() =>
+            Promise.resolve({
+                data: {
+                    'currentlyReading': ["sJf1vQAACAAJ"],
+                    'wantToRead': ["nggnmAEACAAJ", "evuwdDLfAyYC"],
+                    'read': []
+                }
+            })
+        )
+
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/']}>
+                <App />
+            </MemoryRouter>
+        ) 
+        
+        let app = wrapper.find('App').instance()
+
+        setTimeout( () => {
+            const book = app.state.books[0]
+            book.shelf = 'wantToRead'
+
+            app.onMoveBook(book)
+            
+            setTimeout(() => {
+                expect(app.state).toBeDefined()
+                expect(app.state.books).toHaveLength(3)
+                expect(app.state.books[2].shelf).toEqual('wantToRead')
+                done()
+            }, 300)
+
+        }, 400);
+
+    })
+
+    it('adds new book to shelf', (done) => {
+        const book = {
+            "title": "Learning React",
+            "subtitle": "",
+            "authors": [
+                "Me"
+            ],
+            "publisher": "No Starch Press",
+            "publishedDate": "2012",
+            "description": "This is a new book!",
+            "pageCount": 480,
+            "printType": "BOOK",
+            "averageRating": 4,
+            "ratingsCount": 2,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "1.2.2.0.preview.2",
+            "previewLink": "http://books.google.com/books?id=nggnmAEACAAJ&dq=linux&hl=&cd=3&source=gbs_api",
+            "id": "xxxxxxx",
+            "shelf": "currentlyReading"
+        }
+
+        mockAxios.put = jest.fn(mockAxios.put).mockImplementationOnce(() =>
+            Promise.resolve({
+                data: {
+                    'currentlyReading': ["sJf1vQAACAAJ", "xxxxxxx"],
+                    'wantToRead': ["nggnmAEACAAJ", "evuwdDLfAyYC"],
+                    'read': []
+                }
+            })
+        )
+
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/']}>
+                <App />
+            </MemoryRouter>
+        )
 
         let app = wrapper.find('App').instance()
 
-        await setTimeout(() => {
-            expect(app.state).toBeDefined()
-            expect(app.state.search).toHaveLength(0)
-        }, 500)
+        setTimeout(() => {
+            app.onMoveBook(book)
+
+            setTimeout(() => {
+                expect(app.state).toBeDefined()
+                expect(app.state.books).toHaveLength(4)
+                expect(app.state.books[3].title).toEqual('Learning React')
+                done()
+            }, 300)
+        }, 400)
     })
 
+    it('removes book from shelf', (done) => {
+        const book = {
+            "title": "Learning React",
+            "subtitle": "",
+            "authors": [
+                "Me"
+            ],
+            "publisher": "No Starch Press",
+            "publishedDate": "2012",
+            "description": "This is a new book!",
+            "pageCount": 480,
+            "printType": "BOOK",
+            "averageRating": 4,
+            "ratingsCount": 2,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "1.2.2.0.preview.2",
+            "previewLink": "http://books.google.com/books?id=nggnmAEACAAJ&dq=linux&hl=&cd=3&source=gbs_api",
+            "id": "xxxxxxx",
+            "shelf": "currentlyReading"
+        }
 
-    //TODO: Uncomment
-    // it('searches one book', () => {
-    //     const wrapper = mount(
-    //         <MemoryRouter initialEntries={['/search']}>
-    //             <App />
-    //         </MemoryRouter>
-    //     )
+        mockAxios.put = jest.fn(mockAxios.put).mockImplementationOnce(() =>
+            Promise.resolve({
+                data: {
+                    'currentlyReading': ["sJf1vQAACAAJ"],
+                    'wantToRead': ["evuwdDLfAyYC"],
+                    'read': []
+                }
+            })
+        )
+        mockAxios.get = jest.fn(mockAxios.get).mockImplementationOnce(() =>
+            Promise.resolve({
+                data: {
+                    books: [book]
+                }
+            })
+        )
 
-    //     wrapper.find('input').simulate('change', {target: {value: 'The Linux'}})
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/']}>
+                <App />
+            </MemoryRouter>
+        )
 
-    //     let app = wrapper.find('App').instance()
+        let app = wrapper.find('App').instance()
 
-    //     setTimeout( () => {
-    //         expect(app.state).toBeDefined()
-    //         expect(app.state.search).toHaveLength(1)
-    //         expect(app.state.search[0].title).toBe('The Linux Command Line')
-    //     }, 500)
-    // })
+        setTimeout(() => {
+            book.shelf = 'none'
+            app.onMoveBook(book)
 
-    // it('moves book between shelves', async () => {
-    //     mockAxios.put = jest.fn(() =>
-    //         Promise.resolve({
-    //             response: {
-    //                 data: {
-    //                     'currentlyReading': ["sJf1vQAACAAJ"],
-    //                     'wantToRead': ["nggnmAEACAAJ", "evuwdDLfAyYC"],
-    //                     'read': []
-    //                 }
-    //             }
-    //         })
-    //     )
-        
-    //     const wrapper = mount(
-    //         <MemoryRouter initialEntries={['/']}>
-    //             <App />
-    //         </MemoryRouter>
-    //     ) 
+            setTimeout(() => {
+                app = wrapper.find('App').instance()
 
-    //     let app = wrapper.find('App').instance()
-    //     await setTimeout( async () => {
-    //         const book = {...app.state.books[0], shelf: 'wantToRead'}
+                expect(app.state).toBeDefined()
+                expect(app.state.books).toHaveLength(0)
+                done()
+            }, 300)
+        }, 400)
 
-    //         app.onMoveBook(book)
-            
-    //         await setTimeout(() => {
-    //             wrapper.update()
-    //             app = wrapper.find('App').instance()
-    //             expect(app.state).toBeDefined()
-    //             expect(app.state.books).toHaveLength(3)
-    //             expect(app.state.books[0].shelf).toEqual('wantToRead')
-    //         }, 500)
+    })
 
-    //     }, 500);
+    it('fails to move book from shelf', (done) => {
+        const book = {
+            "title": "Learning React",
+            "subtitle": "",
+            "authors": [
+                "Me"
+            ],
+            "publisher": "No Starch Press",
+            "publishedDate": "2012",
+            "description": "This is a new book!",
+            "pageCount": 480,
+            "printType": "BOOK",
+            "averageRating": 4,
+            "ratingsCount": 2,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "1.2.2.0.preview.2",
+            "previewLink": "http://books.google.com/books?id=nggnmAEACAAJ&dq=linux&hl=&cd=3&source=gbs_api",
+            "id": "xxxxxxx",
+            "shelf": "currentlyReading"
+        }
 
-    // })
+        mockAxios.put = jest.fn(mockAxios.put).mockImplementationOnce(() =>
+            Promise.reject({
+                response: undefined
+            })
+        )
 
-    // it('fails to move book between shelves', async () => {
-    //     mockAxios.put.mockImplementationOnce(() =>
-    //         Promise.reject({
-    //             response: {}
-    //         })
-    //     )
+        const wrapper = mount(
+            <MemoryRouter initialEntries={['/']}>
+                <App />
+            </MemoryRouter>
+        )
 
-    //     const wrapper = mount(
-    //         <MemoryRouter initialEntries={['/']}>
-    //             <App />
-    //         </MemoryRouter>
-    //     )
+        let app = wrapper.find('App').instance()
 
-    //     let app = wrapper.find('App').instance()
+        setTimeout(() => {
+            app.onMoveBook(book)
 
-    //     const mock = jest.fn()
-    //     app.showMessage = mock
-
-    //     await setTimeout( async () => {
-    //         const book = {...app.state.books[0], shelf: 'wantToRead'}
-
-    //         app.onMoveBook(book)
-
-    //         await setTimeout(() => {
-    //             wrapper.update()
-    //             app = wrapper.find('App').instance()
-    //             expect(app.state).toBeDefined()
-    //             expect(app.state.books).toHaveLength(3)
-    //             expect(app.state.books[0].shelf).toEqual('read')
-    //             expect(mock).toHaveBeenCalledTimes(1)
-    //         }, 500)
-
-    //     }, 500);
-
-    // })
+            setTimeout(() => {
+                expect(app.state).toBeDefined()
+                expect(app.state.books).toBeDefined()
+                done()
+            }, 300)
+        }, 400)
+    })
 
 })
