@@ -3,6 +3,7 @@ body {
   padding: 0px;
   font-family: 'Roboto', sans-serif;
   line-height: 1.5;
+  scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {

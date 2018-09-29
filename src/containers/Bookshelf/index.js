@@ -7,15 +7,12 @@ import Book from "../../components/Book";
 
 class Bookshelf extends Component {
     static defaultProps = {
-        shelf: 'Bookshelf',
-        books: []
-    }
-
-    static defaultProps={
+        shelf: '',
+        books: [],
         options: [
-            {value: 'currentlyReading', label: 'Currently Reading'},
-            {value: 'wantToRead', label: 'Want to read'},
-            {value: 'read', label: 'Read'}
+            { value: 'currentlyReading', label: 'Currently Reading' },
+            { value: 'wantToRead', label: 'Want to read' },
+            { value: 'read', label: 'Read' }
         ]
     }
 

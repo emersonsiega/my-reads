@@ -24,38 +24,48 @@ class BooksAPI {
     return token;
   }
 
-  static get (bookId, callback, errCallback) {
-    this._service.get( `/books/${bookId}` )
-      .then(response => callback(response.data.book))
-      .catch(response => errCallback(response))
+  static get ( bookId ) {
+    const request = this._service.get( `/books/${bookId}` )
+
+    return request
+      .then( response => response.data.book )
+      .catch( err => err.response )
   }
 
-  static getAll( callback, errCallback ) {
-    this._service.get( '/books' )
-      .then(response => callback(response.data.books))
-      .catch(response => errCallback(response))
+  static getAll() {
+    const request = this._service.get( '/books' )
+
+    return request
+      .then( response => response.data.books )
+      .catch( err => err.response )
   }
 
-  static update(book, shelf, callback, errCallback) {
-    this._service.put( `/books/${book.id}`, JSON.stringify({ shelf }), 
-    {headers: {
+  static update( book, shelf ) {
+    const request = this._service.put( `/books/${book.id}`, JSON.stringify({ shelf }), 
+    {
+      headers: {
         ...this._service.headers,
         'Content-Type': 'application/json'
       }
     })
-    .then( response => callback(response.data) )
-    .catch( response => errCallback(response) )
+
+    return request
+      .then( response => response.data )
+      .catch(err => err.response )
   }
 
-  static search(query, callback, errCallback) {
-    this._service.post( '/search', JSON.stringify({ query }), 
-    {headers: {
+  static search( query ) {
+    const request = this._service.post( '/search', JSON.stringify({ query }), 
+    {
+      headers: {
         ...this._service.headers,
         'Content-Type': 'application/json'
       }
     })
-    .then( response => callback(response.data.books) )
-    .catch( response => errCallback(response) )
+
+    return request
+      .then( response => response.data.books )
+      .catch( err => err.response )
   }
 
 }

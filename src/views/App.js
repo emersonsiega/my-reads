@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import { Route } from "react-router-dom";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './App.css'
 import BooksAPI from "../service/BooksAPI";
 import BookSearchBar from "../components/BookSearchBar";
-import {Toast, ShowMessage} from "../components/Toast";
 import Bookshelves from "../containers/Bookshelves";
 import Library from "../containers/Library";
 
@@ -22,6 +24,7 @@ class App extends Component {
         this.onMoveBook = this.onMoveBook.bind(this)
         this.onSearchBook = this.onSearchBook.bind(this)
         this.mapBooksToShelf = this.mapBooksToShelf.bind(this)
+        this.mapShelfByBookId = this.mapShelfByBookId.bind(this)
     }
 
     static defaultProps = {
@@ -37,94 +40,115 @@ class App extends Component {
     }
 
     componentDidMount() {
-        BooksAPI.getAll(
-            (books) => {
-                this.setState({
-                    books: books,
-                    loading: false
-                });
-            }, 
-            () => ShowMessage('Failed to load books! =/')
-        );
+        BooksAPI.getAll().then( (books) => {
+            if (!books) {
+                this.showMessage('Failed to load books! =/')
+                return
+            }
+
+            this.setState({
+                books: books,
+                loading: false
+            });
+        });
     }
 
-    setShelfToBook = ( book, bookFinded ) => {
-        if ( book.id === bookFinded.id) {
-            book.shelf = bookFinded.shelf;
-
-            if ( book.shelf === 'none' ) {
-                book.shelf = undefined;
-            }
-        }
-
-        return book;
+    showMessage = message => {
+        toast.info(message, {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false
+        })
     }
 
     onMoveBook (book) {
-        BooksAPI.update( book, book.shelf, (data) => {
-            if ( data && data[book.shelf].length === 0 ) return;
-
-            // TODO: improve this method
-            const booksChanged = this.state.books.map( b => this.setShelfToBook( b, book ) );
-            if ( !booksChanged.includes( book ) ) {
-                booksChanged.push(book);
+        BooksAPI.update( book, book.shelf ).then( (data) => {
+            if ( !data ) {
+                this.showMessage(`Failed to move Book! =/`)
+                return
             }
-            
-            this.setState({ books: booksChanged })
 
-            if ( book.shelf && book.shelf !== 'none' ) {
-                ShowMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
+            const {books} = this.state
+            const existsInState = books.filter( b => b.id === book.id ).length > 0
+            const existsInApi = book.shelf !== 'none' && data[book.shelf].includes(book.id)
+
+            if ( !existsInState && existsInApi ) {
+                books.push(book);
+                this.setState({ books: books })
+            } else if ( existsInState ) {
+                const booksChanged = books.filter( b => b.id !== book.id )
+
+                if ( existsInApi ) {
+                    booksChanged.push(book)
+                }
+
+                this.setState({ books: booksChanged })
+            }
+
+            if ( existsInApi ) {
+                this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
             } else {
-                ShowMessage( `Book removed from bookshelf` );
+                this.showMessage( `Book removed from bookshelf` );
             }
-        },
-        () => {
-            ShowMessage( `Failed to move Book! =/` );
-        } );
+        });
+    }
+
+    mapShelfByBookId() {
+        const shelfByBook = this.state.books.reduce((acc, cv) => {
+            acc[cv.id] = cv.shelf; 
+            return acc
+        }, {})
+
+        return shelfByBook;
     }
 
     mapBooksToShelf(books) {
-        const booksMapped = books.map( book => { 
-            //TODO: find a way to avoid this find inside a map
-            let stateBook = this.state.books.find( b => b.id === book.id );
-            book.shelf = stateBook ? stateBook.shelf : 'none';
+        const shelfByBook = this.mapShelfByBookId()
 
-            return book;
-        } );
+        const booksWithShelf = books.map(b => {
+            b.shelf = shelfByBook[b.id] ? shelfByBook[b.id] : 'none'
+            return b
+        })
 
-        return booksMapped;
+        return booksWithShelf;
     }
 
     onSearchBook(query) {
-        if ( query.length < 3 ) {
-            this.setState({ search: [] })
-            return;
+        if (query.length === 0) {
+            return
         }
 
-        BooksAPI.search( query, 
-            (books) => {
-                let booksMapped = []
+        BooksAPI.search( query ).then((books) => {
+            let booksMapped = []
 
-                if ( books.error ) {
-                    ShowMessage( 'No results! Try a different search =)' );
-                } else {
-                    booksMapped = this.mapBooksToShelf( books );
-                }
-
-                this.setState({search: booksMapped});
-            },
-            () => { 
-                this.setState({search: []});
-                ShowMessage(`Failed to search books! =/`) 
+            if ( !books ) {
+                this.setState({ search: [] })
+                this.showMessage(`Failed to search books! =/`)
+                return
             }
-        )
+
+            if ( books.error ) {
+                this.showMessage( 'No results! Try a different search =)' )
+            } else {
+                booksMapped = this.mapBooksToShelf( books )
+            }
+
+            this.setState({search: booksMapped})
+        })
     }
 
     render() {
         return (
             <div>
                 <Route render={ (props) => (<BookSearchBar title='MyReads' onSearchBook={this.onSearchBook} {...props} />)} />
-                <Route component={Toast}/>
+                <Route render={ () => (
+                    <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop 
+                        closeOnClick rtl={false} pauseOnVisibilityChange draggable={false} pauseOnHover 
+                    />
+                )}/>
                 <Route exact path='/' render={ () => (
                     <div>
                         {this.state.loading ?
