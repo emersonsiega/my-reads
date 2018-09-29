@@ -42,7 +42,7 @@ class BookSearchBar extends Component {
 
                             <DebounceInput className='search-input' type='text' autoFocus={true}
                                 value={this.state.value}
-                                placeholder='Search books' minLength={3} debounceTimeout={300}
+                                placeholder='Search books' minLength={1} debounceTimeout={300}
                                 onChange={this.updateValue} 
                             />
 
