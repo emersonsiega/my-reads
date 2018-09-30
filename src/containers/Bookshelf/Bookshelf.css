@@ -1,0 +1,36 @@
+.bookshelf-container {
+    overflow-x: scroll;
+}
+
+.shelf-title {
+    font-size: 1.8em;
+    color: #333;
+    border-bottom: 1px solid #dedede;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    font-weight: 300;
+}
+
+.books-list {
+    display: inline-flex;
+    flex-flow: row;
+    overflow-y: hidden;
+}
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    /* padding: 20px; */
+    color: #989898;
+    font-weight: 200;
+    font-size: 2em;
+}
+
+.empty-message-link {
+    color: #989898;
+    font-weight: 200;
+    padding-right: 6px;
+    padding-left: 6px;
+    cursor: pointer;
+    text-decoration-style: dotted;
+}
