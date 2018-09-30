@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
 import './index.css';
 import 'typeface-roboto'
@@ -8,8 +8,8 @@ import 'typeface-roboto'
 import App from "./views/App";
 
 ReactDOM.render(
-    <BrowserRouter>
+    <HashRouter basename={process.env.PUBLIC_URL}>
         <App />
-    </BrowserRouter>, 
+    </HashRouter>, 
     document.getElementById('root')
 );

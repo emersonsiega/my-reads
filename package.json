@@ -2,6 +2,7 @@
   "name": "my-reads",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://emersonsiega.github.io/my-reads/",
   "dependencies": {
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
@@ -28,6 +29,7 @@
     "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
+    "gh-pages": "^2.0.0",
     "html-webpack-plugin": "2.29.0",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
@@ -58,7 +60,9 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "predeploy" : "npm run build -- --production",
+    "deploy": "gh-pages -d build"
   },
   "jest": {
     "collectCoverageFrom": [
