@@ -118,6 +118,7 @@ class App extends Component {
 
     onSearchBook(query) {
         if (query.length === 0) {
+            this.setState({ search: [] })
             return
         }
 

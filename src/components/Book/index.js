@@ -16,7 +16,7 @@ class Book extends Component {
     static defaultProps = {
         book: {},
         options: [],
-        coverPlaceholder: process.env.PUBLIC_URL || '' + '/img/image-placeholder.png'
+        coverPlaceholder: (process.env.PUBLIC_URL || '') + '/img/image-placeholder.png'
     }
 
     handleMoveBook (selected, {action}) {
