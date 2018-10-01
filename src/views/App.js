@@ -76,8 +76,9 @@ class App extends Component {
             const existsInApi = book.shelf !== 'none' && data[book.shelf].includes(book.id)
 
             if ( !existsInState && existsInApi ) {
-                books.push(book);
-                this.setState({ books: books })
+                this.setState({
+                    books: [...books, book]
+                })
             } else if ( existsInState ) {
                 const booksChanged = books.filter( b => b.id !== book.id )
 
