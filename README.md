@@ -15,7 +15,20 @@ npm start
 ```
 
 ## Demo
-The demo is hosted ~~temporarily~~ at [Heroku](https://my-reads-siega.herokuapp.com/)
+You can see a live demo [here](https://emersonsiega.github.io/my-reads/)
+
+**Searching**
+
+![Searching](https://media.giphy.com/media/2fSegR5QbFAnvz4UMX/giphy.gif)
+
+**Moving**
+
+![Moving](https://media.giphy.com/media/ckOcNqp2sgubiJ974f/giphy.gif)
+
+**Removing**
+
+![Removing](https://media.giphy.com/media/1xoqhOTG3zOBKB08Q2/giphy.gif)
+
 
 ## What You're Getting
 
@@ -49,9 +62,34 @@ After clone the repo, you will see many files. These are the main ones:
     |   `-- App.js
 ```
 
+**External packages**
+
+This project also use some external packages:
+*  [axios](https://www.npmjs.com/package/axios)
+*  [react-router-dom](https://www.npmjs.com/package/react-router-dom)
+*  [react-select](https://www.npmjs.com/package/react-select)
+*  [react-progressive-image](https://www.npmjs.com/package/react-progressive-image)
+*  [react-star-rating-component](https://www.npmjs.com/package/react-star-rating-component)
+*  [react-debounce-input](https://www.npmjs.com/package/react-debounce-input)
+*  [react-toastify](https://www.npmjs.com/package/react-toastify)
+
+And for unit tests:
+*  [jest](https://www.npmjs.com/package/jest)
+*  [enzyme](https://www.npmjs.com/package/enzyme)
+
 
 **Test coverage**
 
 To see the unit tests coverage report, you can simply run `npm test -- --coverage`.
 
-It will create a report in */my-reads/coverage/lcov-report/index.html*
+It will create a report in */my-reads/coverage/lcov-report/index.html*, it will looks like this:
+
+![Code coverage](https://i.imgur.com/ITGL7iw.png)
+
+## Authors
+
+[Emerson Siega](https://www.linkedin.com/in/emerson-luis-siega-79152952/)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/emersonsiega/my-reads/blob/master/LICENSE) file for details
