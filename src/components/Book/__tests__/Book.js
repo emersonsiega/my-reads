@@ -256,10 +256,11 @@ describe('<Book />', () => {
             book: { ...props.book, shelf: 'none' }
         }
 
-        const wrapper = new Book({...ownProps});
+        const wrapper = shallow(<Book {...ownProps} />)        
+        const func = wrapper.find('StateManager').props().onChange
 
         // Unfortunately, it's the only way to test the 'onChange' of react-select
-        wrapper.handleMoveBook({ value: 'read' }, { action:'select-option'});
+        func({ value: 'read' }, { action:'select-option'})
         expect(onMoveBook).toHaveBeenCalledTimes(1)
     })
 
@@ -269,10 +270,11 @@ describe('<Book />', () => {
             book: { ...props.book, shelf: 'read' }
         }
 
-        const wrapper = new Book({ ...ownProps });
+        const wrapper = shallow(<Book {...ownProps} />)
+        const func = wrapper.find('StateManager').props().onChange
 
         // Unfortunately, it's the only way to test the 'onChange' of react-select
-        wrapper.handleMoveBook({}, { action: 'clear' });
+        func({}, { action: 'clear' });
         expect(onMoveBook).toHaveBeenCalledTimes(2)
     })
 

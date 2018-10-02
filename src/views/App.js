@@ -89,6 +89,10 @@ class App extends Component {
                 this.setState({ books: booksChanged })
             }
 
+            // Update search books
+            const searchBooks = this.mapBooksToShelf( this.state.search )
+            this.setState({ search: searchBooks })
+
             if ( existsInApi ) {
                 this.showMessage( `Book moved to ${this.getShelfLabel(book.shelf).name}` );
             } else {
