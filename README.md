@@ -88,7 +88,7 @@ It will create a report in */my-reads/coverage/lcov-report/index.html*, it will 
 
 ## Authors
 
-[Emerson Siega](https://www.linkedin.com/in/emerson-luis-siega-79152952/)
+[Emerson Siega](https://www.linkedin.com/in/emersonsiega/)
 
 ## License
 
